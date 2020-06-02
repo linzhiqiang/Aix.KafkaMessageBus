@@ -26,7 +26,11 @@ namespace KafkaMessageBusExample.HostedService
         {
             Task.Run(async () =>
             {
-                await Producer(cancellationToken);
+                List<Task> taskList = new List<Task>();
+
+                taskList.Add(Producer(cancellationToken));
+
+                await Task.WhenAll(taskList.ToArray());
             });
 
             return Task.CompletedTask;

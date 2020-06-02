@@ -43,15 +43,20 @@ namespace Aix.KafkaMessageBus.KafkaImpl
             _kafkaOptions = serviceProvider.GetService<KafkaMessageBusOptions>();
         }
 
-        public Task Subscribe(string topic, string groupId, CancellationToken cancellationToken)
+        public async Task Subscribe(string topic, string groupId, CancellationToken cancellationToken)
         {
-            return Task.Run(async () =>
-            {
-                _isStart = true;
-                this._consumer = this.CreateConsumer(groupId);
-                this._consumer.Subscribe(topic);
-                await StartPoll(cancellationToken);
-            });
+            _isStart = true;
+            this._consumer = this.CreateConsumer(groupId);
+            this._consumer.Subscribe(topic);
+            await StartPoll(cancellationToken);
+
+            //return Task.Run(async () =>
+            //{
+            //    _isStart = true;
+            //    this._consumer = this.CreateConsumer(groupId);
+            //    this._consumer.Subscribe(topic);
+            //    await StartPoll(cancellationToken);
+            //});
         }
 
         public void Close()
@@ -61,8 +66,6 @@ namespace Aix.KafkaMessageBus.KafkaImpl
             ManualCommitOffset();
             With.NoException(_logger, () => { this._consumer?.Close(); }, "关闭消费者");
         }
-
-
 
         public void Dispose()
         {
@@ -115,25 +118,17 @@ namespace Aix.KafkaMessageBus.KafkaImpl
 
         private async Task Consumer(CancellationToken cancellationToken)
         {
-            try
-            {
-                var result = this._consumer.Consume(cancellationToken);// 默认100毫秒
-                //这里处理超时提交
-                // if (result == null || result.IsPartitionEOF || result.Value == null)
-                if (result == null || result.IsPartitionEOF || result.Message == null || result.Message.Value == null)
-                {
-                    return;
-                }
-                //消费数据
-                await Handler(result);
+            var result = this._consumer.Consume(cancellationToken);// 默认100毫秒
 
-                //处理手动提交
-                ManualCommitOffset(result); //采用后提交（至少一次）,消费前提交（至多一次）
-            }
-            finally
+            if (result == null || result.IsPartitionEOF || result.Message == null || result.Message.Value == null)
             {
-                ManualTimeoutCommitOffset();
+                return;
             }
+            //消费数据
+            await Handler(result);
+
+            //处理手动提交
+            ManualCommitOffset(result); //采用后提交（至少一次）,消费前提交（至多一次）
         }
 
 
@@ -154,6 +149,10 @@ namespace Aix.KafkaMessageBus.KafkaImpl
                 if (Count % _kafkaOptions.ManualCommitBatch == 0)
                 {
                     ManualCommitOffset();
+                }
+                else
+                {
+                    ManualTimeoutCommitOffset();
                 }
             }
         }

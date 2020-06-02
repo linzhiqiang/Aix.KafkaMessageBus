@@ -22,19 +22,14 @@ namespace KafkaMessageBusExample.HostedService
             _messageBus = messageBus;
         }
 
-        public Task StartAsync(CancellationToken cancellationToken)
+        public async Task StartAsync(CancellationToken cancellationToken)
         {
-            Task.Run(async () =>
-            {
-                List<Task> taskList = new List<Task>();
+            List<Task> taskList = new List<Task>();
 
-                taskList.Add(Subscribe(cancellationToken));
-                //taskList.Add(SubscribeGroup(cancellationToken));
+            taskList.Add(Subscribe(cancellationToken));
+            //taskList.Add(SubscribeGroup(cancellationToken));
 
-                await Task.WhenAll(taskList.ToArray());
-            });
-
-            return Task.CompletedTask;
+            await Task.WhenAll(taskList.ToArray());
         }
 
         public Task StopAsync(CancellationToken cancellationToken)
@@ -52,7 +47,7 @@ namespace KafkaMessageBusExample.HostedService
                     var current = Interlocked.Increment(ref Count);
                     _logger.LogInformation($"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss fff")}消费--1--数据：MessageId={message.MessageId},Content={message.Content},count={current}");
                     await Task.CompletedTask;
-                });
+                }, null, cancellationToken);
             }
             catch (Exception ex)
             {
@@ -68,7 +63,7 @@ namespace KafkaMessageBusExample.HostedService
                 SubscribeOptions subscribeOptions = new SubscribeOptions();
                 subscribeOptions.GroupId = "group2";
                 subscribeOptions.ConsumerThreadCount = 2;
-               
+
                 await _messageBus.SubscribeAsync<BusinessMessage>(async (message) =>
                 {
                     var current = Interlocked.Increment(ref Count);
