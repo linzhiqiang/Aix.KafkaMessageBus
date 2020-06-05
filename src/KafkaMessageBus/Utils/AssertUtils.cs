@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Aix.KafkaMessageBus.Utils
 {
-    public static class AssertUtils
+    internal static class AssertUtils
     {
         public static void IsTrue(bool condition, string errorText)
         {

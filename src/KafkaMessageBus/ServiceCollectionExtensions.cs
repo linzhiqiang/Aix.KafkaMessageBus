@@ -1,4 +1,4 @@
-﻿using Aix.KafkaMessageBus.KafkaImpl;
+﻿using Aix.KafkaMessageBus.Impl;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -12,7 +12,7 @@ namespace Aix.KafkaMessageBus
         {
             services
                .AddSingleton<KafkaMessageBusOptions>(options)
-               .AddSingleton<IMessageBus, KafkaMessageBusImpl>();
+               .AddSingleton<IMessageBus, KafkaMessageBus>();
 
             return services;
         }

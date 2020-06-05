@@ -50,8 +50,7 @@ namespace KafkaMessageBusExample.HostedService
                 for (int i = 0; i < producerCount; i++)
                 {
                     if (cancellationToken.IsCancellationRequested) break;
-
-                    await With.NoException(_logger, async () =>
+                    try
                     {
                         var messageData = new BusinessMessage
                         {
@@ -61,8 +60,12 @@ namespace KafkaMessageBusExample.HostedService
                         };
                         await _messageBus.PublishAsync(messageData);
                         _logger.LogInformation($"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss fff")}生产数据：MessageId={messageData.MessageId}");
-                    }, "生产消息");
 
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogError(ex, "生产消息出错");
+                    }
                 }
             }
             catch (Exception ex)

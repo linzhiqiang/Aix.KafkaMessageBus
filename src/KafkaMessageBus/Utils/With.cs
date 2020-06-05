@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Aix.KafkaMessageBus.Utils
 {
-    public static class With
+    internal static class With
     {
         public static void NoException(ILogger logger, Action action, string message)
         {

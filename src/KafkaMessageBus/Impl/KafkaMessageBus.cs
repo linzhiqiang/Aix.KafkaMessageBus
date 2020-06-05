@@ -1,4 +1,5 @@
-﻿using Aix.KafkaMessageBus.Model;
+﻿using Aix.KafkaMessageBus.Impl;
+using Aix.KafkaMessageBus.Model;
 using Aix.KafkaMessageBus.Utils;
 using Confluent.Kafka;
 using Microsoft.Extensions.Logging;
@@ -8,16 +9,16 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Aix.KafkaMessageBus.KafkaImpl
+namespace Aix.KafkaMessageBus
 {
     /// <summary>
     /// kafka实现messagebus
     /// </summary>
-    public class KafkaMessageBusImpl : IMessageBus
+    public class KafkaMessageBus : IMessageBus
     {
         #region 属性 构造
         private IServiceProvider _serviceProvider;
-        private ILogger<KafkaMessageBusImpl> _logger;
+        private ILogger<KafkaMessageBus> _logger;
         private KafkaMessageBusOptions _kafkaOptions;
         IKafkaProducer<string, KafkaMessageBusData> _producer = null;
         List<IKafkaConsumer<string, KafkaMessageBusData>> _consumerList = new List<IKafkaConsumer<string, KafkaMessageBusData>>();
@@ -26,7 +27,7 @@ namespace Aix.KafkaMessageBus.KafkaImpl
 
         #endregion
 
-        public KafkaMessageBusImpl(IServiceProvider serviceProvider, ILogger<KafkaMessageBusImpl> logger, KafkaMessageBusOptions kafkaOptions)
+        public KafkaMessageBus(IServiceProvider serviceProvider, ILogger<KafkaMessageBus> logger, KafkaMessageBusOptions kafkaOptions)
         {
             _serviceProvider = serviceProvider;
             _logger = logger;

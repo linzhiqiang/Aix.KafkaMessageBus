@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using Aix.KafkaMessageBus.Serializer;
 using Aix.KafkaMessageBus.Utils;
 
-namespace Aix.KafkaMessageBus.KafkaImpl
+namespace Aix.KafkaMessageBus.Impl
 {
     /// <summary>
     /// kafka生产者实现

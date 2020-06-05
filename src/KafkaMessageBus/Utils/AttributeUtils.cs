@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Aix.KafkaMessageBus.Utils
 {
-    public static class AttributeUtils
+    internal static class AttributeUtils
     {
         public static T GetAttribute<T>(Type type) where T : Attribute
         {

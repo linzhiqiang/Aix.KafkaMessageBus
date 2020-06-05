@@ -11,7 +11,7 @@ using Aix.KafkaMessageBus.Utils;
 using System.Linq;
 using Aix.KafkaMessageBus.Serializer;
 
-namespace Aix.KafkaMessageBus.KafkaImpl
+namespace Aix.KafkaMessageBus.Impl
 {
     /// <summary>
     /// kafka消费者
@@ -45,11 +45,6 @@ namespace Aix.KafkaMessageBus.KafkaImpl
 
         public async Task Subscribe(string topic, string groupId, CancellationToken cancellationToken)
         {
-            _isStart = true;
-            this._consumer = this.CreateConsumer(groupId);
-            this._consumer.Subscribe(topic);
-            await StartPoll(cancellationToken);
-
             //return Task.Run(async () =>
             //{
             //    _isStart = true;
@@ -57,11 +52,21 @@ namespace Aix.KafkaMessageBus.KafkaImpl
             //    this._consumer.Subscribe(topic);
             //    await StartPoll(cancellationToken);
             //});
+
+            _isStart = true;
+            this._consumer = this.CreateConsumer(groupId);
+            this._consumer.Subscribe(topic);
+            await StartPoll(cancellationToken);
         }
 
         public void Close()
         {
-            this._isStart = false;
+            if (this._isStart == false) return;
+            lock (this)
+            {
+                if (this._isStart == false) return;
+                this._isStart = false;
+            }
             _logger.LogInformation("Kafka关闭消费者");
             ManualCommitOffset();
             With.NoException(_logger, () => { this._consumer?.Close(); }, "关闭消费者");
@@ -86,25 +91,29 @@ namespace Aix.KafkaMessageBus.KafkaImpl
                     {
                         try
                         {
-                            await Consumer(cancellationToken);
+                            await Consumer(cancellationToken);//AccessViolationException
+                        }
+                        catch (OperationCanceledException)
+                        {
+                            //_logger.LogError(ex, $"消费异常退出消费循环OperationCanceledException，操作取消");
                         }
                         catch (ConsumeException ex)
                         {
-                            _logger.LogError($"消费拉取消息ConsumeException, {ex.Message}, {ex.StackTrace}");
+                            _logger.LogError(ex, $"消费拉取消息ConsumeException");
                         }
                         catch (KafkaException ex)
                         {
-                            _logger.LogError($"消费拉取消息KafkaException, {ex.Message}, {ex.StackTrace}");
+                            _logger.LogError(ex, $"消费拉取消息KafkaException");
                         }
                         catch (Exception ex)
                         {
-                            _logger.LogError($"消费拉取消息系统异常, {ex.Message}, {ex.StackTrace}");
+                            _logger.LogError(ex, $"消费拉取消息系统异常Exception");
                         }
                     }
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError($"消费异常退出消费循环, {ex.Message}, {ex.StackTrace}");
+                    _logger.LogError(ex, $"消费异常退出消费循环Exception");
                 }
                 finally
                 {
@@ -118,8 +127,8 @@ namespace Aix.KafkaMessageBus.KafkaImpl
 
         private async Task Consumer(CancellationToken cancellationToken)
         {
-            var result = this._consumer.Consume(cancellationToken);// 默认100毫秒
-
+            var result = this._consumer.Consume(cancellationToken);// cancellationToken默认100毫秒
+                                                                   // if (result == null || result.IsPartitionEOF || result.Value == null)
             if (result == null || result.IsPartitionEOF || result.Message == null || result.Message.Value == null)
             {
                 return;
@@ -207,16 +216,14 @@ namespace Aix.KafkaMessageBus.KafkaImpl
 
         private async Task Handler(ConsumeResult<TKey, TValue> consumeResult)
         {
-            if (OnMessage != null)
+            if (OnMessage == null) return;
+            try
             {
-                await With.NoException(_logger, async () =>
-                {
-                    await OnMessage(consumeResult);
-                }, "kafka消费失败");
+                await OnMessage(consumeResult);
             }
-            else
+            catch (Exception ex)
             {
-                _logger.LogWarning("kafka没有注册消费事件");
+                _logger.LogError(ex, "kafka消费失败");
             }
         }
         private void AddToOffsetDict(TopicPartition topicPartition, TopicPartitionOffset TopicPartitionOffset)
