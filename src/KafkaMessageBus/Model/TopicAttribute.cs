@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Aix.KafkaMessageBus.Utils;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -13,12 +14,16 @@ namespace Aix.KafkaMessageBus.Model
 
         public TopicAttribute()
         {
+            //System.ComponentModel.DataAnnotations.DisplayAttribute
+            //System.ComponentModel.DataAnnotations.KeyAttribute
         }
 
         public static TopicAttribute GetTopicAttribute(Type type)
         {
-            var attrs = type.GetCustomAttributes(typeof(TopicAttribute), true);
-            return attrs != null && attrs.Length > 0 ? attrs[0] as TopicAttribute : null;
+            //var attrs = type.GetCustomAttributes(typeof(TopicAttribute), true);
+            //return attrs != null && attrs.Length > 0 ? attrs[0] as TopicAttribute : null;
+            return AttributeUtils.GetAttribute<TopicAttribute>(type);
+
         }
     }
 

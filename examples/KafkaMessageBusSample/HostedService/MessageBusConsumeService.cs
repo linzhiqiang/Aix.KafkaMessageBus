@@ -13,10 +13,10 @@ namespace KafkaMessageBusExample.HostedService
     public class MessageBusConsumeService : IHostedService
     {
         private ILogger<MessageBusConsumeService> _logger;
-        public IMessageBus _messageBus;
+        public IKafkaMessageBus _messageBus;
 
         private int Count = 0;
-        public MessageBusConsumeService(ILogger<MessageBusConsumeService> logger, IMessageBus messageBus)
+        public MessageBusConsumeService(ILogger<MessageBusConsumeService> logger, IKafkaMessageBus messageBus)
         {
             _logger = logger;
             _messageBus = messageBus;

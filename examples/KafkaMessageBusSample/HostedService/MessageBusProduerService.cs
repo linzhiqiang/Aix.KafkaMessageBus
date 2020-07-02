@@ -13,9 +13,9 @@ namespace KafkaMessageBusExample.HostedService
     public class MessageBusProduerService : IHostedService
     {
         private ILogger<MessageBusProduerService> _logger;
-        public IMessageBus _messageBus;
+        public IKafkaMessageBus _messageBus;
         private CmdOptions _cmdOptions;
-        public MessageBusProduerService(ILogger<MessageBusProduerService> logger, IMessageBus messageBus, CmdOptions cmdOptions)
+        public MessageBusProduerService(ILogger<MessageBusProduerService> logger, IKafkaMessageBus messageBus, CmdOptions cmdOptions)
         {
             _logger = logger;
             _messageBus = messageBus;

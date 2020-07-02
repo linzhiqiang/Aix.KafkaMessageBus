@@ -16,6 +16,8 @@ namespace KafkaMessageBusExample
             var options = CmdOptions.Options;
             services.AddSingleton(options);
             var kafkaMessageBusOptions = context.Configuration.GetSection("kafka").Get<KafkaMessageBusOptions>();
+            var cancellationDelayMaxMs = context.Configuration.GetSection("kafka:ConsumerConfig:CancellationDelayMaxMs").Get<int?>();
+            if (cancellationDelayMaxMs.HasValue) kafkaMessageBusOptions.ConsumerConfig.CancellationDelayMaxMs = cancellationDelayMaxMs.Value;
             services.AddKafkaMessageBus(kafkaMessageBusOptions);
 
             if ((options.Mode & (int)ClientMode.Consumer) > 0)

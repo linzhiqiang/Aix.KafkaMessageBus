@@ -1,12 +1,14 @@
 ﻿using Aix.KafkaMessageBus.Model;
 using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace KafkaMessageBusExample
 {
-    [TopicAttribute(Name = "BusinessMessage")]
+    //[TopicAttribute(Name = "BusinessMessage")]
+    [DisplayAttribute(Name = "ServiceCallInfo")]
     public class BusinessMessage
     {
-        [RouteKeyAttribute]
+      //  [RouteKeyAttribute]
         public string MessageId { get; set; }
         public string Content { get; set; }
 

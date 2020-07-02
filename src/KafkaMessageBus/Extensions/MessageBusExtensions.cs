@@ -7,7 +7,7 @@ namespace Aix.KafkaMessageBus
 {
     public static class MessageBusExtensions
     {
-        public static Task PublishAsync<T>(this IMessageBus messageBus, T message)
+        public static Task PublishAsync<T>(this IKafkaMessageBus messageBus, T message)
         {
             return messageBus.PublishAsync(typeof(T), message);
         }

@@ -140,6 +140,27 @@ namespace Aix.KafkaMessageBus.Impl
             ManualCommitOffset(result); //采用后提交（至少一次）,消费前提交（至多一次）
         }
 
+        private async Task Handler(ConsumeResult<TKey, TValue> consumeResult)
+        {
+            if (OnMessage == null) return;
+            try
+            {
+                await OnMessage(consumeResult);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "kafka消费失败");
+            }
+        }
+
+        private void AddToOffsetDict(TopicPartition topicPartition, TopicPartitionOffset TopicPartitionOffset)
+        {
+            _currentOffsets.AddOrUpdate(topicPartition, TopicPartitionOffset, (key, oldValue) =>
+            {
+                return TopicPartitionOffset.Offset > oldValue.Offset ? TopicPartitionOffset : oldValue;
+            });
+        }
+
 
         /// <summary>
         /// 手工提交offset
@@ -214,26 +235,7 @@ namespace Aix.KafkaMessageBus.Impl
             _currentOffsets.Clear();
         }
 
-        private async Task Handler(ConsumeResult<TKey, TValue> consumeResult)
-        {
-            if (OnMessage == null) return;
-            try
-            {
-                await OnMessage(consumeResult);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "kafka消费失败");
-            }
-        }
-        private void AddToOffsetDict(TopicPartition topicPartition, TopicPartitionOffset TopicPartitionOffset)
-        {
-            _currentOffsets.AddOrUpdate(topicPartition, TopicPartitionOffset, (key, oldValue) =>
-            {
-                return TopicPartitionOffset.Offset > oldValue.Offset ? TopicPartitionOffset : oldValue;
-            });
-        }
-
+        
         /// <summary>
         /// 创建消费者对象
         /// </summary>
@@ -268,7 +270,7 @@ namespace Aix.KafkaMessageBus.Impl
                      if (error.IsFatal || error.IsBrokerError)
                      {
                          string errorInfo = $"Code:{error.Code}, Reason:{error.Reason}, IsFatal={error.IsFatal}, IsLocalError:{error.IsLocalError}, IsBrokerError:{error.IsBrokerError}";
-                         _logger.LogError($"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss fff")}Kafka消费者出错：{errorInfo}");
+                         _logger.LogError($"Kafka消费者出错：{errorInfo}");
                      }
                  })
                  .SetPartitionsRevokedHandler((c, partitions) =>
@@ -287,7 +289,8 @@ namespace Aix.KafkaMessageBus.Impl
                      {
                          ClearCurrentOffsets();
                      }
-                     _logger.LogInformation($"MemberId:{c.MemberId}分配的分区：Assigned partitions: [{string.Join(", ", partitions)}]");
+                     //_logger.LogInformation($"MemberId:{c.MemberId}分配的分区：Assigned partitions: [{string.Join(", ", partitions)}]");
+                     _logger.LogInformation($"MemberId:{c.MemberId}分配的分区：{DisplayTopicPartitions(partitions)}");
                  })
                .SetValueDeserializer(new ConfluentKafkaSerializerAdapter<TValue>(_kafkaOptions.Serializer));
 
@@ -314,6 +317,20 @@ namespace Aix.KafkaMessageBus.Impl
         {
             var enableAutoCommit = this._kafkaOptions.ConsumerConfig.EnableAutoCommit;
             return !enableAutoCommit.HasValue || enableAutoCommit.Value == true;
+        }
+
+        private string DisplayTopicPartitions(List<TopicPartition> topicPartitions)
+        {
+            StringBuilder sb = new StringBuilder();
+            if (topicPartitions != null)
+            {
+                foreach (var group in topicPartitions.GroupBy(x => x.Topic))
+                {
+                    sb.Append($"{group.Key}[{string.Join(",",group.Select(x=>x.Partition.Value))}]");
+                }
+                    
+            }
+            return sb.ToString();
         }
 
         #endregion

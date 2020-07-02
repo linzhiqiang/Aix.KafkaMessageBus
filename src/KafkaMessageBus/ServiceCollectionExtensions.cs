@@ -12,7 +12,7 @@ namespace Aix.KafkaMessageBus
         {
             services
                .AddSingleton<KafkaMessageBusOptions>(options)
-               .AddSingleton<IMessageBus, KafkaMessageBus>();
+               .AddSingleton<IKafkaMessageBus, KafkaMessageBus>();
 
             return services;
         }

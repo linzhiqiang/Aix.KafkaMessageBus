@@ -13,7 +13,7 @@ namespace Aix.KafkaMessageBus
     {
         public KafkaMessageBusOptions()
         {
-            //this.TopicPrefix = "kafka-messagebus-";
+            this.TopicPrefix = "";//demo-messagebus-
             this.Serializer = new MessagePackSerializer();
             this.DefaultConsumerThreadCount = 4;
             this.ManualCommitBatch = 100;

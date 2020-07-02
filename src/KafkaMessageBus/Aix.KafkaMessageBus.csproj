@@ -10,11 +10,13 @@
     <PackOnBuild>true</PackOnBuild>
     <Authors>linzhiqiang</Authors>
     <PackageProjectUrl>https://github.com/linzhiqiang/Aix.KafkaMessageBus.git</PackageProjectUrl>
+    <Version>1.0.2</Version>
+    <PackageReleaseNotes>升级组件</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Confluent.Kafka" Version="1.4.3" />
-    <PackageReference Include="MessagePack" Version="2.1.115" />
+    <PackageReference Include="Confluent.Kafka" Version="1.4.4" />
+    <PackageReference Include="MessagePack" Version="2.1.152" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="3.1.4" />
   </ItemGroup>
 

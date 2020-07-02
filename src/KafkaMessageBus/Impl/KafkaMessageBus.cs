@@ -14,7 +14,7 @@ namespace Aix.KafkaMessageBus
     /// <summary>
     /// kafka实现messagebus
     /// </summary>
-    public class KafkaMessageBus : IMessageBus
+    public class KafkaMessageBus : IKafkaMessageBus
     {
         #region 属性 构造
         private IServiceProvider _serviceProvider;
@@ -41,9 +41,9 @@ namespace Aix.KafkaMessageBus
             AssertUtils.IsNotNull(message, "消息不能null");
             var topic = GetTopic(messageType);
             var data = new KafkaMessageBusData { Topic = topic, Data = _kafkaOptions.Serializer.Serialize(message) };
-            var keyValue = AttributeUtils.GetPropertyValue<RouteKeyAttribute>(message);
+            var keyValue = Helper.GetKey(message);
             //await _producer.ProduceAsync(topic, new Message<Null, KafkaMessageBusData> { Value = data });
-            await _producer.ProduceAsync(topic, new Message<string, KafkaMessageBusData> { Key = keyValue?.ToString(), Value = data });
+            await _producer.ProduceAsync(topic, new Message<string, KafkaMessageBusData> { Key = keyValue, Value = data });
         }
 
         public async Task SubscribeAsync<T>(Func<T, Task> handler, SubscribeOptions subscribeOptions = null, CancellationToken cancellationToken = default(CancellationToken)) where T : class
@@ -59,7 +59,7 @@ namespace Aix.KafkaMessageBus
 
             ValidateSubscribe(topic, groupId);
 
-            _logger.LogInformation($"-------------订阅[topic:{topic}]：groupid:{groupId},threadcount:{threadCount}-------------");
+            _logger.LogInformation($"订阅Topic:{topic},GroupId:{groupId},ConsumerThreadCount:{threadCount}");
             for (int i = 0; i < threadCount; i++)
             {
                 var consumer = new KafkaConsumer<string, KafkaMessageBusData>(_serviceProvider);
