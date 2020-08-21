@@ -10,8 +10,8 @@
     <PackOnBuild>true</PackOnBuild>
     <Authors>linzhiqiang</Authors>
     <PackageProjectUrl>https://github.com/linzhiqiang/Aix.KafkaMessageBus.git</PackageProjectUrl>
-    <Version>1.0.6</Version>
-    <PackageReleaseNotes>升级组件</PackageReleaseNotes>
+    <Version>1.0.7</Version>
+    <PackageReleaseNotes>升级组件，兼容老版本topic问题</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>

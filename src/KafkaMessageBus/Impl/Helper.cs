@@ -11,6 +11,10 @@ namespace Aix.KafkaMessageBus.Impl
     {
         public static string GetTopic(KafkaMessageBusOptions options, Type type)
         {
+            if (!string.IsNullOrEmpty(options.Topic))
+            {
+                return options.Topic;
+            }
             string topicName = type.Name;
 
             var topicAttr = TopicAttribute.GetTopicAttribute(type);

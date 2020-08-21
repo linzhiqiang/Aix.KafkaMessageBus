@@ -61,5 +61,10 @@ namespace Aix.KafkaMessageBus
         /// </summary>
         public int ManualCommitIntervalSecond { get; set; }
 
+        /// <summary>
+        /// topic 若果配置了该选项，所有发布订阅都使用该主题 ,兼容老版本问题，请勿配置
+        /// </summary>
+        public string Topic { get; set; }
+
     }
 }
