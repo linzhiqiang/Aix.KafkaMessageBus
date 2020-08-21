@@ -33,10 +33,11 @@ namespace Aix.KafkaMessageBus.Impl
         public static string GetKey(object message)
         {
             var keyValue = AttributeUtils.GetPropertyValue<RouteKeyAttribute>(message);
-            //if (keyValue == null)
-            //{
-            //    keyValue = AttributeUtils.GetPropertyValue<KeyAttribute>(message);
-            //}
+            if (keyValue == null)
+            {
+                keyValue = AttributeUtils.GetPropertyValue<KeyAttribute>(message);
+                //keyValue = AttributeUtils.GetPropertyValue(message, "RouteKey");
+            }
             return keyValue != null ? keyValue.ToString() : null;
         }
     }

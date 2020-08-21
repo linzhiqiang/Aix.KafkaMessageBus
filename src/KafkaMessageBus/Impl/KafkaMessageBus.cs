@@ -41,6 +41,9 @@ namespace Aix.KafkaMessageBus
             AssertUtils.IsNotNull(message, "消息不能null");
             var topic = GetTopic(messageType);
             var data = new KafkaMessageBusData { Topic = topic, Data = _kafkaOptions.Serializer.Serialize(message) };
+            // //字符串类型 null和""继续走随机分配，其他路由给指定分区
+            //int类型 指定分区
+            //int? 有值时指定分区，null时随机
             var keyValue = Helper.GetKey(message);
             //await _producer.ProduceAsync(topic, new Message<Null, KafkaMessageBusData> { Value = data });
             await _producer.ProduceAsync(topic, new Message<string, KafkaMessageBusData> { Key = keyValue, Value = data });

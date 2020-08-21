@@ -4,11 +4,14 @@ using System.ComponentModel.DataAnnotations;
 
 namespace KafkaMessageBusExample
 {
-    //[TopicAttribute(Name = "BusinessMessage")]
-    [DisplayAttribute(Name = "ServiceCallInfo")]
+    [TopicAttribute(Name = "demo")]
+    [DisplayAttribute(Name = "demo")]
     public class BusinessMessage
     {
-      //  [RouteKeyAttribute]
+
+        public string RouteKey { get; set; }
+
+        // [RouteKeyAttribute]
         public string MessageId { get; set; }
         public string Content { get; set; }
 

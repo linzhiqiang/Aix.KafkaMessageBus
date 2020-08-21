@@ -5,6 +5,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Reflection.Metadata;
 using System.Text;
 
 namespace KafkaMessageBusExample
@@ -28,6 +32,8 @@ namespace KafkaMessageBusExample
             {
                 services.AddHostedService<MessageBusProduerService>();
             }
+
+             
         }
     }
 }
