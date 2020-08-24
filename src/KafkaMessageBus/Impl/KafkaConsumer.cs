@@ -33,6 +33,7 @@ namespace Aix.KafkaMessageBus.Impl
         private volatile bool _isStart = false;
         private int Count = 0;
         private DateTime LastCommitTime = DateTime.MaxValue;
+        private int CancellationDelayMaxMs = 0;
 
         public event Func<ConsumeResult<TKey, TValue>, Task> OnMessage;
         public KafkaConsumer(IServiceProvider serviceProvider)
@@ -41,6 +42,7 @@ namespace Aix.KafkaMessageBus.Impl
 
             _logger = serviceProvider.GetService<ILogger<KafkaConsumer<TKey, TValue>>>();
             _kafkaOptions = serviceProvider.GetService<KafkaMessageBusOptions>();
+            CancellationDelayMaxMs = _kafkaOptions.CancellationDelayMaxMs > 0 ? _kafkaOptions.CancellationDelayMaxMs : 100;
         }
 
         public async Task Subscribe(string topic, string groupId, CancellationToken cancellationToken)
@@ -92,6 +94,8 @@ namespace Aix.KafkaMessageBus.Impl
                         try
                         {
                             await Consumer(cancellationToken);//AccessViolationException
+
+                            ManualTimeoutCommitOffset(); //处理间隔多长时间主动提交，针对手工提交配置
                         }
                         catch (OperationCanceledException)
                         {
@@ -127,8 +131,8 @@ namespace Aix.KafkaMessageBus.Impl
 
         private async Task Consumer(CancellationToken cancellationToken)
         {
-            var result = this._consumer.Consume(cancellationToken);// cancellationToken默认100毫秒
-                                                                   // if (result == null || result.IsPartitionEOF || result.Value == null)
+            //var result = this._consumer.Consume(cancellationToken);// cancellationToken默认100毫秒
+            var result = this._consumer.Consume(CancellationDelayMaxMs);
             if (result == null || result.IsPartitionEOF || result.Message == null || result.Message.Value == null)
             {
                 return;
@@ -180,10 +184,10 @@ namespace Aix.KafkaMessageBus.Impl
                 {
                     ManualCommitOffset();
                 }
-                else
-                {
-                    ManualTimeoutCommitOffset();
-                }
+                //else
+                //{
+                //    ManualTimeoutCommitOffset();
+                //}
             }
         }
 
@@ -221,7 +225,7 @@ namespace Aix.KafkaMessageBus.Impl
                 if (_currentOffsets.Count > 0)
                 {
                     LastCommitTime = DateTime.Now;
-                    // _logger.LogInformation($"--------------------手动提交偏移量分区：{ string.Join(",", _currentOffsets.Values)}----------------");
+                    //_logger.LogInformation($"--------------------手动提交偏移量分区：{ string.Join(",", _currentOffsets.Values)}----------------");
                     this._consumer.Commit(_currentOffsets.Values);
                 }
             }, "手动提交所有分区错误");
@@ -235,7 +239,7 @@ namespace Aix.KafkaMessageBus.Impl
             _currentOffsets.Clear();
         }
 
-        
+
         /// <summary>
         /// 创建消费者对象
         /// </summary>
@@ -326,9 +330,9 @@ namespace Aix.KafkaMessageBus.Impl
             {
                 foreach (var group in topicPartitions.GroupBy(x => x.Topic))
                 {
-                    sb.Append($"{group.Key}[{string.Join(",",group.Select(x=>x.Partition.Value))}]");
+                    sb.Append($"{group.Key}[{string.Join(",", group.Select(x => x.Partition.Value))}]");
                 }
-                    
+
             }
             return sb.ToString();
         }

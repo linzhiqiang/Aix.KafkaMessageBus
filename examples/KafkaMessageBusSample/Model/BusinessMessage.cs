@@ -8,10 +8,8 @@ namespace KafkaMessageBusExample
     [DisplayAttribute(Name = "demo")]
     public class BusinessMessage
     {
-
-        public string RouteKey { get; set; }
-
         // [RouteKeyAttribute]
+      //  [KeyAttribute]
         public string MessageId { get; set; }
         public string Content { get; set; }
 

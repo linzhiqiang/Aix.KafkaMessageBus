@@ -15,9 +15,10 @@ namespace Aix.KafkaMessageBus
         {
             this.TopicPrefix = "";//demo-messagebus-
             this.Serializer = new MessagePackSerializer();
-            this.DefaultConsumerThreadCount = 4;
+            this.DefaultConsumerThreadCount = 2;
             this.ManualCommitBatch = 100;
             this.ManualCommitIntervalSecond = 0;
+            this.CancellationDelayMaxMs = 100;
 
         }
 
@@ -47,7 +48,7 @@ namespace Aix.KafkaMessageBus
         public ISerializer Serializer { get; set; }
 
         /// <summary>
-        /// 默认每个Topic的消费线程数 默认4个,请注意与分区数的关系
+        /// 默认每个Topic的消费线程数 默认2个,请注意与分区数的关系
         /// </summary>
         public int DefaultConsumerThreadCount { get; set; }
 
@@ -60,6 +61,11 @@ namespace Aix.KafkaMessageBus
         /// EnableAutoCommit=false时 每多少秒提交一次 默认0秒不开启  ManualCommitBatch和ManualCommitIntervalSecond是或的关系
         /// </summary>
         public int ManualCommitIntervalSecond { get; set; }
+
+        /// <summary>
+        /// 循环拉去间隔时间 默认100(毫秒)
+        /// </summary>
+        public int CancellationDelayMaxMs { get; set; }
 
         /// <summary>
         /// topic 若果配置了该选项，所有发布订阅都使用该主题 ,兼容老版本问题，请勿配置

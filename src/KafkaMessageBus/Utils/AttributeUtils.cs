@@ -41,12 +41,26 @@ namespace Aix.KafkaMessageBus.Utils
             return null;
         }
 
-        public static object GetPropertyValue(object message,string propertyName)
+        public static PropertyInfo GetProperty<TAttribute>(object message) where TAttribute : Attribute
         {
             if (message == null) return null;
             foreach (PropertyInfo item in message.GetType().GetProperties())
             {
-                if (string.Compare(item.Name,propertyName,true)==0)
+                var attr = item.GetCustomAttribute<TAttribute>(true);
+                if (attr != null)
+                {
+                    return item;
+                }
+            }
+            return null;
+        }
+
+        public static object GetPropertyValue(object message, string propertyName)
+        {
+            if (message == null) return null;
+            foreach (PropertyInfo item in message.GetType().GetProperties())
+            {
+                if (string.Compare(item.Name, propertyName, true) == 0)
                 {
                     return item.GetValue(message);
                 }

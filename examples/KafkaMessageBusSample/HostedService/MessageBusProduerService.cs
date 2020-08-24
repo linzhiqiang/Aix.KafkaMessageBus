@@ -54,7 +54,7 @@ namespace KafkaMessageBusExample.HostedService
                     {
                         var messageData = new BusinessMessage
                         {
-                            MessageId = "路由key",// i.ToString(),
+                            MessageId = "",// "路由key",// i.ToString(),
                             Content = $"我是内容_{i}",
                             CreateTime = DateTime.Now
                         };
