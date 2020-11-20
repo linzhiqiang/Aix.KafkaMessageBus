@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.1</TargetFramework>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <Description>kafka实现的messagebus组件
 支持手工提交offset模式（根据批量和时间）
 支持根据分组订阅
@@ -10,8 +10,8 @@
     <PackOnBuild>true</PackOnBuild>
     <Authors>linzhiqiang</Authors>
     <PackageProjectUrl>https://github.com/linzhiqiang/Aix.KafkaMessageBus.git</PackageProjectUrl>
-    <Version>1.0.8</Version>
-    <PackageReleaseNotes>添加相关缓存</PackageReleaseNotes>
+    <Version>1.0.9</Version>
+    <PackageReleaseNotes>兼容standard2.0</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
