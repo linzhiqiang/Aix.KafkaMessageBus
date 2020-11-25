@@ -3,7 +3,7 @@ using Aix.KafkaMessageBus.Utils;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+//using System.ComponentModel.DataAnnotations;
 using System.Reflection;
 using System.Text;
 
@@ -41,11 +41,11 @@ namespace Aix.KafkaMessageBus.Impl
                 }
                 else
                 {
-                    var displayAttr = AttributeUtils.GetAttribute<DisplayAttribute>(type);
-                    if (displayAttr != null && !string.IsNullOrEmpty(displayAttr.Name))
-                    {
-                        topicName = displayAttr.Name;
-                    }
+                    //var displayAttr = AttributeUtils.GetAttribute<DisplayAttribute>(type);
+                    //if (displayAttr != null && !string.IsNullOrEmpty(displayAttr.Name))
+                    //{
+                    //    topicName = displayAttr.Name;
+                    //}
                 }
                 topicName = $"{options.TopicPrefix ?? ""}{topicName}";
             }
@@ -59,13 +59,6 @@ namespace Aix.KafkaMessageBus.Impl
         public static string GetKey(object message)
         {
             if (message == null) return null;
-            //var keyValue = AttributeUtils.GetPropertyValue<RouteKeyAttribute>(message);
-            //if (keyValue == null)
-            //{
-            //    keyValue = AttributeUtils.GetPropertyValue<KeyAttribute>(message);
-            //    //keyValue = AttributeUtils.GetPropertyValue(message, "RouteKey");
-            //}
-            //return keyValue != null ? keyValue.ToString() : null;
 
             var type = message.GetType();
             PropertyInfo property = null;
@@ -76,7 +69,7 @@ namespace Aix.KafkaMessageBus.Impl
             else
             {
                 property = AttributeUtils.GetProperty<RouteKeyAttribute>(message);
-                if (property == null) property = AttributeUtils.GetProperty<KeyAttribute>(message);
+                //if (property == null) property = AttributeUtils.GetProperty<KeyAttribute>(message);
                 RouteKeyCache.TryAdd(type, property);
             }
             
