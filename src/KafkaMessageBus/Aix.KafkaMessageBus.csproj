@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.1</TargetFramework>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <Description>kafka实现的messagebus组件
 支持手工提交offset模式（根据批量和时间）
 支持根据分组订阅
@@ -10,14 +10,16 @@
     <PackOnBuild>true</PackOnBuild>
     <Authors>linzhiqiang</Authors>
     <PackageProjectUrl>https://github.com/linzhiqiang/Aix.KafkaMessageBus.git</PackageProjectUrl>
-    <Version>1.0.8</Version>
+    <Version>1.0.11</Version>
     <PackageReleaseNotes>添加相关缓存</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Confluent.Kafka" Version="1.5.0" />
+    <PackageReference Include="Confluent.Kafka" Version="1.5.2" />
     <PackageReference Include="MessagePack" Version="1.7.3.4" />
-    <PackageReference Include="Microsoft.Extensions.Logging" Version="3.1.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="5.0.0" />
+    <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
   </ItemGroup>
 
 </Project>
