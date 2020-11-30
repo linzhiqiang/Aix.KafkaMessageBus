@@ -14,7 +14,7 @@ namespace Aix.KafkaMessageBus
         public KafkaMessageBusOptions()
         {
             this.TopicPrefix = "";//demo-messagebus-
-            this.Serializer = new MessagePackSerializer();
+            this.Serializer = SerializerFactory.Instance.GetSerialize();
             this.DefaultConsumerThreadCount = 2;
             this.ManualCommitBatch = 100;
             this.ManualCommitIntervalSecond = 0;
