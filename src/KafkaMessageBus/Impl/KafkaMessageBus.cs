@@ -51,6 +51,15 @@ namespace Aix.KafkaMessageBus
 
         public async Task SubscribeAsync<T>(Func<T, Task> handler, SubscribeOptions subscribeOptions = null, CancellationToken cancellationToken = default(CancellationToken)) where T : class
         {
+            await SubscribeAsync<T>((obj, context) =>
+            {
+                return handler(obj);
+            }, subscribeOptions, cancellationToken);
+        }
+
+
+        public async Task SubscribeAsync<T>(Func<T, SubscribeContext, Task> handler, SubscribeOptions subscribeOptions = null, CancellationToken cancellationToken = default(CancellationToken)) where T : class
+        {
             string topic = GetTopic(typeof(T));
 
             var groupId = subscribeOptions?.GroupId;
@@ -71,7 +80,8 @@ namespace Aix.KafkaMessageBus
                     return With.NoException(_logger, async () =>
                     {
                         var obj = _kafkaOptions.Serializer.Deserialize<T>(consumeResult.Message.Value.Data);
-                        await handler(obj);
+                        var subscribeContext = new SubscribeContext { Topic = topic, GroupId = groupId };
+                        await handler(obj, subscribeContext);
                     }, $"消费数据{consumeResult.Message.Value.Topic}");
                 };
 
@@ -79,7 +89,7 @@ namespace Aix.KafkaMessageBus
                 await consumer.Subscribe(topic, groupId, cancellationToken);
             }
         }
-
+        
         public void Dispose()
         {
             _logger.LogInformation("KafkaMessageBus 释放...");
