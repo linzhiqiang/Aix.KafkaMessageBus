@@ -1,0 +1,212 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Aix.KafkaMessageBus</name>
+    </assembly>
+    <members>
+        <member name="M:Aix.KafkaMessageBus.IKafkaMessageBus.PublishAsync(System.Type,System.Object)">
+            <summary>
+            发布消息
+            </summary>
+            <param name="messageType"></param>
+            <param name="message"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Aix.KafkaMessageBus.IKafkaMessageBus.SubscribeAsync``1(System.Func{``0,System.Threading.Tasks.Task},Aix.KafkaMessageBus.Model.SubscribeOptions,System.Threading.CancellationToken)">
+            <summary>
+            订阅消息
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="handler"></param>
+            <param name="subscribeOptions"></param>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Aix.KafkaMessageBus.IKafkaMessageBus.SubscribeAsync``1(System.Func{``0,Aix.KafkaMessageBus.Model.SubscribeContext,System.Threading.Tasks.Task},Aix.KafkaMessageBus.Model.SubscribeOptions,System.Threading.CancellationToken)">
+            <summary>
+            订阅消息
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="handler"></param>
+            <param name="subscribeOptions"></param>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
+        <member name="F:Aix.KafkaMessageBus.Impl.Helper.TopicCache">
+            <summary>
+            topic缓存
+            </summary>
+        </member>
+        <member name="T:Aix.KafkaMessageBus.Impl.KafkaConsumer`2">
+            <summary>
+            kafka消费者
+            </summary>
+            <typeparam name="TKey"></typeparam>
+            <typeparam name="TValue"></typeparam>
+        </member>
+        <member name="F:Aix.KafkaMessageBus.Impl.KafkaConsumer`2._currentOffsets">
+            <summary>
+            存储每个分区的最大offset，针对手工提交 
+            </summary>
+        </member>
+        <member name="M:Aix.KafkaMessageBus.Impl.KafkaConsumer`2.ManualCommitOffset(Confluent.Kafka.ConsumeResult{`0,`1})">
+            <summary>
+            手工提交offset
+            </summary>
+            <param name="result"></param>
+        </member>
+        <member name="M:Aix.KafkaMessageBus.Impl.KafkaConsumer`2.ManualTimeoutCommitOffset">
+            <summary>
+            超过配置时间提交
+            </summary>
+        </member>
+        <member name="M:Aix.KafkaMessageBus.Impl.KafkaConsumer`2.ManualCommitOffset">
+            <summary>
+            提交所有分区
+            </summary>
+        </member>
+        <member name="M:Aix.KafkaMessageBus.Impl.KafkaConsumer`2.CreateConsumer(System.String)">
+            <summary>
+            创建消费者对象
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Aix.KafkaMessageBus.Impl.KafkaConsumer`2.EnableAutoCommit">
+            <summary>
+            是否是自动提交
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:Aix.KafkaMessageBus.Impl.KafkaProducer`2">
+            <summary>
+            kafka生产者实现
+            </summary>
+            <typeparam name="TKey"></typeparam>
+            <typeparam name="TValue"></typeparam>
+        </member>
+        <member name="M:Aix.KafkaMessageBus.Impl.KafkaProducer`2.ProduceAsync2(System.String,Confluent.Kafka.Message{`0,`1})">
+            <summary>
+            事务版本   貌似没必要 要求 配置TransactionalId，Acks必须等于all
+            </summary>
+            <param name="topic"></param>
+            <param name="message"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Aix.KafkaMessageBus.KafkaMessageBus">
+            <summary>
+            kafka实现messagebus
+            </summary>
+        </member>
+        <member name="T:Aix.KafkaMessageBus.KafkaMessageBusOptions">
+            <summary>
+            kafka配置
+            </summary>
+        </member>
+        <member name="P:Aix.KafkaMessageBus.KafkaMessageBusOptions.ProducerConfig">
+            <summary>
+            生产者配置
+            </summary>
+        </member>
+        <member name="P:Aix.KafkaMessageBus.KafkaMessageBusOptions.ConsumerConfig">
+            <summary>
+            消费者配置
+            </summary>
+        </member>
+        <member name="P:Aix.KafkaMessageBus.KafkaMessageBusOptions.BootstrapServers">
+            <summary>
+            kafka集群地址 多个时逗号分隔
+            </summary>
+        </member>
+        <member name="P:Aix.KafkaMessageBus.KafkaMessageBusOptions.TopicPrefix">
+            <summary>
+            topic前缀，为了防止重复，建议用项目名称
+            </summary>
+        </member>
+        <member name="P:Aix.KafkaMessageBus.KafkaMessageBusOptions.Serializer">
+            <summary>
+            自定义序列化，默认为MessagePack
+            </summary>
+        </member>
+        <member name="P:Aix.KafkaMessageBus.KafkaMessageBusOptions.DefaultConsumerThreadCount">
+            <summary>
+            默认每个Topic的消费线程数 默认2个,请注意与分区数的关系
+            </summary>
+        </member>
+        <member name="P:Aix.KafkaMessageBus.KafkaMessageBusOptions.ManualCommitBatch">
+            <summary>
+            EnableAutoCommit=false时每多少个消息提交一次 默认100条消息提交一次，重要业务建议手工提交
+            </summary>
+        </member>
+        <member name="P:Aix.KafkaMessageBus.KafkaMessageBusOptions.ManualCommitIntervalSecond">
+            <summary>
+            EnableAutoCommit=false时 每多少秒提交一次 默认0秒不开启  ManualCommitBatch和ManualCommitIntervalSecond是或的关系
+            </summary>
+        </member>
+        <member name="P:Aix.KafkaMessageBus.KafkaMessageBusOptions.CancellationDelayMaxMs">
+            <summary>
+            循环拉去间隔时间 默认100(毫秒)
+            </summary>
+        </member>
+        <member name="P:Aix.KafkaMessageBus.KafkaMessageBusOptions.Topic">
+            <summary>
+            topic 若果配置了该选项，所有发布订阅都使用该主题 ,兼容老版本问题，请勿配置
+            </summary>
+        </member>
+        <member name="T:Aix.KafkaMessageBus.Model.RouteKeyAttribute">
+            <summary>
+            分区key标识
+            </summary>
+        </member>
+        <member name="T:Aix.KafkaMessageBus.Model.SubscribeOptions">
+            <summary>
+            单个订阅的配置，针对当前订阅有效
+            </summary>
+        </member>
+        <member name="P:Aix.KafkaMessageBus.Model.SubscribeOptions.GroupId">
+            <summary>
+            分组 默认取全局配置
+            </summary>
+        </member>
+        <member name="P:Aix.KafkaMessageBus.Model.SubscribeOptions.ConsumerThreadCount">
+            <summary>
+            消费者线程数 默认取全局配置
+            </summary>
+        </member>
+        <member name="P:Aix.KafkaMessageBus.Model.TopicAttribute.Name">
+            <summary>
+            Topic
+            </summary>
+        </member>
+        <member name="T:Aix.KafkaMessageBus.Serializer.ConfluentKafkaSerializerAdapter`1">
+            <summary>
+            kafka序列化适配  转化为Confluent.Kafka的api要求
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="T:Aix.KafkaMessageBus.Serializer.MessagePackSerializerImpl">
+            <summary>
+            1.7.34
+            </summary>
+        </member>
+        <member name="M:Aix.KafkaMessageBus.Utils.With.ReTry(Microsoft.Extensions.Logging.ILogger,System.Func{System.Threading.Tasks.Task},System.String,System.Int32)">
+            <summary>
+            失败重试
+            </summary>
+            <param name="logger"></param>
+            <param name="action"></param>
+            <param name="operationName"></param>
+            <param name="reTryCount"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Aix.KafkaMessageBus.Utils.With.ReTry``1(Microsoft.Extensions.Logging.ILogger,System.Func{System.Threading.Tasks.Task{``0}},System.String,System.Int32)">
+            <summary>
+            失败重试
+            </summary>
+            <param name="logger"></param>
+            <param name="action"></param>
+            <param name="operationName"></param>
+            <param name="reTryCount"></param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>
