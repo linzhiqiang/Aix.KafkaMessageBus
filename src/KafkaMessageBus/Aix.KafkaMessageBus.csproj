@@ -10,7 +10,7 @@
     <PackOnBuild>true</PackOnBuild>
     <Authors>linzhiqiang</Authors>
     <PackageProjectUrl>https://github.com/linzhiqiang/Aix.KafkaMessageBus.git</PackageProjectUrl>
-    <Version>1.0.144</Version>
+    <Version>1.0.162</Version>
     <PackageReleaseNotes>添加相关缓存</PackageReleaseNotes>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
@@ -20,7 +20,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Confluent.Kafka" Version="1.4.4" />
+    <PackageReference Include="Confluent.Kafka" Version="1.6.2" />
     <PackageReference Include="MessagePack" Version="1.7.3.4" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="5.0.0" />
