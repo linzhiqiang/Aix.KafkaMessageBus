@@ -10,7 +10,7 @@
     <PackOnBuild>true</PackOnBuild>
     <Authors>linzhiqiang</Authors>
     <PackageProjectUrl>https://github.com/linzhiqiang/Aix.KafkaMessageBus.git</PackageProjectUrl>
-    <Version>1.0.162</Version>
+    <Version>1.162.1</Version>
     <PackageReleaseNotes>添加相关缓存</PackageReleaseNotes>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
