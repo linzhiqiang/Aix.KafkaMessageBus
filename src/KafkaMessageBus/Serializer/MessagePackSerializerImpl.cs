@@ -9,8 +9,7 @@ namespace Aix.KafkaMessageBus.Serializer
     /// <summary>
     /// 2.1.152
     /// </summary>
-   /*
-    public class MessagePackSerializerBak : ISerializer
+    public class MessagePackSerializerImpl : ISerializer
     {
         private readonly IFormatterResolver _formatterResolver;
         private readonly bool _useCompression;
@@ -18,7 +17,7 @@ namespace Aix.KafkaMessageBus.Serializer
         private MessagePackSerializerOptions _compressionOptions;
         private MessagePackSerializerOptions _unCompressionOptions;
 
-        public MessagePackSerializer(IFormatterResolver resolver = null, bool useCompression = false)
+        public MessagePackSerializerImpl(IFormatterResolver resolver = null, bool useCompression = false)
         {
             _useCompression = useCompression;
             _formatterResolver = resolver ?? ContractlessStandardResolver.Instance;
@@ -53,38 +52,38 @@ namespace Aix.KafkaMessageBus.Serializer
         }
     }
 
-    */
+   
 
     /// <summary>
-    /// 1.7.34
+    /// 1.9.11
     /// </summary>
-    public class MessagePackSerializerImpl : ISerializer
-    {
-        private readonly IFormatterResolver _formatterResolver;
-        private readonly bool _useCompression;
+    //public class MessagePackSerializerImpl : ISerializer
+    //{
+    //    private readonly IFormatterResolver _formatterResolver;
+    //    private readonly bool _useCompression;
 
-        public MessagePackSerializerImpl(IFormatterResolver resolver = null, bool useCompression = false)
-        {
-            _useCompression = useCompression;
-            _formatterResolver = resolver ?? ContractlessStandardResolver.Instance;
-        }
+    //    public MessagePackSerializerImpl(IFormatterResolver resolver = null, bool useCompression = false)
+    //    {
+    //        _useCompression = useCompression;
+    //        _formatterResolver = resolver ?? ContractlessStandardResolver.Instance;
+    //    }
 
-        public T Deserialize<T>(byte[] bytes)
-        {
-            if (_useCompression)
-                return MessagePack.LZ4MessagePackSerializer.Deserialize<T>(bytes, _formatterResolver);
-            else
-                return MessagePack.MessagePackSerializer.Deserialize<T>(bytes, _formatterResolver);
-        }
+    //    public T Deserialize<T>(byte[] bytes)
+    //    {
+    //        if (_useCompression)
+    //            return MessagePack.LZ4MessagePackSerializer.Deserialize<T>(bytes, _formatterResolver);
+    //        else
+    //            return MessagePack.MessagePackSerializer.Deserialize<T>(bytes, _formatterResolver);
+    //    }
 
-        public byte[] Serialize<T>(T data)
-        {
-            if (_useCompression)
-                return MessagePack.LZ4MessagePackSerializer.Serialize(data, _formatterResolver);
-            else
-                return MessagePack.MessagePackSerializer.Serialize(data, _formatterResolver);
-        }
-    }
+    //    public byte[] Serialize<T>(T data)
+    //    {
+    //        if (_useCompression)
+    //            return MessagePack.LZ4MessagePackSerializer.Serialize(data, _formatterResolver);
+    //        else
+    //            return MessagePack.MessagePackSerializer.Serialize(data, _formatterResolver);
+    //    }
+    //}
 
     public class SerializerFactory
     {

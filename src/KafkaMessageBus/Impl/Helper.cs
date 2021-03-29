@@ -29,10 +29,10 @@ namespace Aix.KafkaMessageBus.Impl
             if (!string.IsNullOrEmpty(options.Topic))
             {
                 topicName = options.Topic;
+                topicName = $"{options.TopicPrefix ?? ""}{topicName}";
             }
             else
             {
-
                 topicName = type.Name; //默认等于该类型的名称
                 var topicAttr = TopicAttribute.GetTopicAttribute(type);
                 if (topicAttr != null && !string.IsNullOrEmpty(topicAttr.Name))
