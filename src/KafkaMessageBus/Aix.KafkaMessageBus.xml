@@ -185,7 +185,12 @@
         </member>
         <member name="T:Aix.KafkaMessageBus.Serializer.MessagePackSerializerImpl">
             <summary>
-            1.7.34
+            2.1.152
+            </summary>
+        </member>
+        <member name="T:Aix.KafkaMessageBus.Serializer.SerializerFactory">
+            <summary>
+            1.9.11
             </summary>
         </member>
         <member name="M:Aix.KafkaMessageBus.Utils.With.ReTry(Microsoft.Extensions.Logging.ILogger,System.Func{System.Threading.Tasks.Task},System.String,System.Int32)">
